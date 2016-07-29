@@ -7,5 +7,5 @@ fortran/*.mod
 fortran/Pade_approximants
 
 # Local setting files
-fortran/Make
+fortran/Makefile
 
