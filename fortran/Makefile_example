@@ -16,7 +16,7 @@
 # -------------------------------------------------------------------------------------------------------------------
 
 # Object files
-OBJS = matlab.o savem.o openm.o leastsquare.o tikhonovm.o padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o gitversion.o rw.o meshes.o asym.o main.o
+OBJS = matlab.o savem.o openm.o hpls.o leastsquare.o tikhonovm.o padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o gitversion.o rw.o meshes.o asym.o main.o
 
 # -------------------------------------------------------------------------------------------------------------------
 
