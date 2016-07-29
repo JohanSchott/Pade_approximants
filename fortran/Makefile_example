@@ -1,36 +1,68 @@
-# Modules needed on matter:
-# module load intel/12.1.4  mkl/10.3.10.319
-# Modules needed on India:
+#
+# Makefile for Fortran Pade_approximants program. 
+#
+# -------------------------------------------------------------------------------------------------------------------
+# Modules
+
+# On India:
 # module load gcc/default  atlas/3.9.33/gcc openmpi/default
-# Modules needed on Milou:
+
+# On Matter:
+# module load intel/12.1.4  mkl/10.3.10.319
+
+# On Milou:
 # module load intel/13.1  intelmpi/4.1
 
-OBJS =    matlab.o savem.o openm.o hpls.o leastsquare.o tikhonovm.o        padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o rw.o meshes.o asym.o main.o
-#OBJS =   matlab.o savem.o openm.o        leastsquare.o tikhonovm.o mpim.o padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o rw.o meshes.o asym.o main.o
-#PROG =  ../../../bin/pade_lapack_mpi
-#PROG =  ../pade_lapack_mpi_v4
+# -------------------------------------------------------------------------------------------------------------------
+
+# Object files
+OBJS = matlab.o savem.o openm.o leastsquare.o tikhonovm.o padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o rw.o meshes.o asym.o main.o
+
+# -------------------------------------------------------------------------------------------------------------------
+
+# Binary
 PROG =  Pade_approximants
 
-#LIBRARIES on India:
-LIBS = -L${LIBRARY_PATH}  -llapack -lf77blas -lcblas -latlas -L${ZGELSQUAD} -lzgelsquad -L${DGELSDQUAD} -ldgelsdquad  -L/usr/local/lib -lgmp -lmblas_gmp -lmlapack_gmp
-#LIBRARIES on matter:
+# -------------------------------------------------------------------------------------------------------------------
+
+# Libraries
+
+# On local machine:
+LIBS = -L"${LAPACKPATH}" -llapack -lrefblas -ltmglib  -L"${ZGELSQUAD}" -lzgelsquad -L"${DGELSDQUAD}" -ldgelsdquad 
+
+# On India:
+#LIBS = -L${LIBRARY_PATH}  -llapack -lf77blas -lcblas -latlas -L${ZGELSQUAD} -lzgelsquad -L${DGELSDQUAD} -ldgelsdquad  -L/usr/local/lib -lgmp -lmblas_gmp -lmlapack_gmp
+
+# On Matter:
 #LIBS = -L$(ZGELSQUAD)  -lzgelsquad  -Nmkl -mkl=sequential
-#LIBRARIES on milou:
+
+# On Milou:
 #LIBS = -L${LIBRARY_PATH}  -L${ZGELSQUAD} -lzgelsquad -L${DGELSDQUAD} -ldgelsdquad # -L/usr/local/lib -lgmp -lmblas_gmp -lmlapack_gmp
 
-# Compiler on matter:
+# -------------------------------------------------------------------------------------------------------------------
+
+# Compilers
+
+# On local machine:
+F90 = gfortran 
+F90FLAGS =  -O0 # -fopenmp -g -Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
+
+# On India:
+#INCLUDE = -I/usr/local/include -I/usr/local/include/mpack
+#CC = c++ -O2 # -g -fopenmp -fbounds-check  #  -Wall  # -Waddress   
+#F90 = gfortran -fopenmp  
+#F90FLAGS =  -O2 # -g #-Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
+
+# On matter:
 #F90 = ifort 
 #F90FLAGS =  -O2
-# Compiler on India:
-INCLUDE = -I/usr/local/include -I/usr/local/include/mpack
-CC = c++ -O2 # -g -fopenmp -fbounds-check  #  -Wall  # -Waddress   
-F90 = gfortran -fopenmp  
-#F90 = mpif90  
-F90FLAGS =  -O2 # -g #-Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
-#Compiler on milou:
+
+# On Milou:
 #F90= mpiifort -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
 
 LDFLAGS = $(LIBS)
+
+# -------------------------------------------------------------------------------------------------------------------
 
 all: $(PROG)
 

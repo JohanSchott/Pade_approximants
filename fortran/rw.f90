@@ -1,5 +1,6 @@
 module rw
 use matlab
+use gitversion
 implicit none
 
 character(len=800)  ::  f_in  !input variable required when calling binary
@@ -18,7 +19,7 @@ character(len=800)  :: f_ex  ! Needed if has exact solution to compare with.
 logical             :: mpack
 integer             :: rep
 integer             :: solver !1 for Least Square solution, 2 for Tikhonov solution 
-integer             :: mtr ! Either 0,1,2 or 3. For npade=.false. and mpack=.true, need mtr=1.
+integer             :: mtr ! Either 0,1,2 or 3.
 logical             :: npade,oddc  !If N==M and if mod(M,2)==1
 logical             :: shifted
 integer             :: Nmax,Nmin,Nstep,Mmin,Mmax,Mstep !pade settings
@@ -122,7 +123,9 @@ subroutine saveusedinput()
 implicit none
 !Write parameters read and used from input file  
 open(23,file=trim(f_info))
-write(23,'(a)') "Program version: 4.00"
+write(23,'(a,a)') " git hash number: ", git_revision
+write(23,'(a)') "Program version: 4.00 only_LAPACK"
+write(23,'(a)') "[29/07/2016] Remove MPACK support to make program easier to compile"
 write(23,'(a)') "[29/06/2015] Store also spectrums, making program much faster"
 write(23,'(a)') "[22/06/2015] Now calculate also average of Pade coefficients, not only spectrums"
 write(23,'(a)') "[05/06/2015] MPI version, but had to sacrifice beyond quad precison possibility"
