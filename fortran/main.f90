@@ -28,6 +28,7 @@ end type Gmean
 
 !main variables
 integer                      :: ns !nbr of configurations
+complex(kind=8),allocatable  :: cofc(:) !mpack needs double precision
 complex(kind=16),allocatable :: pole(:),res(:) !poles and residues.
 integer,allocatable          :: good(:) !if configurations are physical or not
 complex(kind=16),allocatable :: Gre(:,:) !Pade approximants G(w+i*eim)
@@ -128,7 +129,22 @@ do j=1,ns
         call getIndices(f_mats_s,first,q,wsplit,wmax,p,ind,wn,Gn)     
     endif
     write(*,'(a,I5,a,I5,a,I3,a,I3,a,I3,a)') "continuation nbr ",j," of ",ns," (first=",first,", N=",N," and M=",M,") "
-    call pade(wn,Gn,mtr,pr,rep,solver,c(j)%x,dev(j,:)) !fortran routine
+    if(mpack) then !c++ routine
+        allocate(cofc(M))
+        cofc=0
+        if(mod(M,2)==1) stop "c++ routine can't handle odd nbr of pade coeff yet"
+        call padec(projc,j,N,M,mtr,pr,cofc,f_mats_c,ind,tmpd) !c++ routine.
+        call readcof(proj,j,c(j)%x) !cofc is only in double precison. Higher precision in file
+        !c(j)%x=cofc
+        dev(j,1)=sqrt(tmpd)
+        deallocate(cofc)
+        allocate(z(N))
+        call eval_pade(c(j)%x,wn,z) !evaluate function on the input points  
+        dev(j,2)=sqrt(sum(abs(Gn-z)**2)) !difference between input and pade on selected matsubara    
+        deallocate(z)
+    else
+        call pade(wn,Gn,mtr,pr,rep,solver,c(j)%x,dev(j,:)) !fortran routine
+    endif
 
     !continuation from real axis to both real and Matsubara axis
     if(exact .and. real2 .and. ftype/=4) then
