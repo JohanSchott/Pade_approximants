@@ -39,4 +39,6 @@ The drawback is of course that MPACK, with its arbitrary precision, can not be u
 ### Future improvements
 - Make the compilation with MPACK easier.
 - Consider off-diagonal Green's functions and self-energies. Especially for negative Matsubara points.
-
+- Clean up the `Makefile` 
+- Paralellize with MPI ?
+- Clean up the fortran code, remove unneccecary printouts and out-commented code sections
