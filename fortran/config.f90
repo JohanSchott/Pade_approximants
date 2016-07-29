@@ -118,6 +118,9 @@ else
       j=j+1
       if(j>1) then
          emesh=emesh+cmplx(0q0,aimag(emesh(1)),kind=16)
+         write(*,*) "Warning:"
+         write(*,*) "No physical continuations found."
+         write(*,*) "Increase distance to real axis."
       endif
       do i=1,size(c)
          call eval_pade(c(i)%x,emesh,Gre(:,i))
