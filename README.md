@@ -43,4 +43,3 @@ The drawback is of course that MPACK, with its arbitrary precision, can not be u
 - Parallelize with MPI ?
 - Clean up the fortran code, remove unneccecary printouts and out-commented code sections
 - Consider having two seperate binaries, one for MPACK and one for modified LAPACK. The MPACK version could be for high-accuracy calculations and the modified LAPACK version for speed and easy compilation. If this can be done by just altering the `Makefile` would be good. But we start by trying two branches: master branch have MPACK and branch `only_LAPACK` removes all MPACK stuff. 
-
