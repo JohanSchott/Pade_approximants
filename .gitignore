@@ -1,0 +1,11 @@
+
+# object and module files
+fortran/*.o
+fortran/*.mod
+
+# executable
+fortran/Pade_approximants
+
+# Local setting files
+fortran/Make
+
