@@ -325,8 +325,6 @@ if(j>0) then
      deallocate(Ga)
   endif
   Gm=Gm+sigma0 !static shift. 
-  if(exact) then
-  endif
   !Print averages and standard deviations
   open(unit=53,file=trim(trim(f_re)//"_pdiag"),action="write")
   if(exact) then 
@@ -345,8 +343,6 @@ if(j>0) then
      enddo
   endif
   close(53)
-else
-  write(42,*)
 endif
 deallocate(x)
 !**********************************
@@ -377,8 +373,6 @@ if(verbosity>5) then
      deallocate(G%aerr)
   endif
   deallocate(x)
-else
-  write(42,*)
 endif
 
 !***************************************
@@ -422,9 +416,6 @@ if(sum(lambda)>0 .and. verbosity>=2) then
   close(53)
 elseif(sum(lambda)<=0) then
   write(33,'(a)') "sum(lambda)=0"
-  write(42,*)
-else
-  write(42,*)
 endif
 
 

@@ -267,7 +267,7 @@ end subroutine
 
 subroutine checkrealmesh()
 implicit none
-if(eim<=0) then
+if(ftype /= 3 .and. eim<=0) then
    stop "Need to evaluate above real axis." 
 end if
 if(estop<=estart) then

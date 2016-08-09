@@ -37,9 +37,13 @@ However the Git branch `only_LAPACK` only requires LAPACK (not MPACK) which make
 The drawback is of course that MPACK, with its arbitrary precision, can not be used.
 
 ### Future improvements
+- Implement ZGELSD in quad precision! For complex quad precision the inaccurate (but fast) ZGELS is used. 
+ZGELS assumes full rank but usually we work will rank deficient cases, where we want to also minimize the norm of the solution vector.Also do some test to check so it really improves the spectrum.
+- Merge the two branches `only_LAPACK` and `master` (only has modified LAPACK and the other also has MPACK). 
+The MPACK version could be for high-accuracy calculations and the modified LAPACK version for speed and easy compilation. 
+Want the branch merge so that the in the `Makefile`, tell if want MPACK or not. Perhaps have some compilation flags in the source code.
 - Make the compilation with MPACK easier.
 - Consider off-diagonal Green's functions and self-energies. Especially for negative Matsubara points.
 - Clean up the `Makefile` 
 - Parallelize with MPI ?
 - Clean up the fortran code, remove unneccecary printouts and out-commented code sections
-- Consider having two seperate binaries, one for MPACK and one for modified LAPACK. The MPACK version could be for high-accuracy calculations and the modified LAPACK version for speed and easy compilation. If this can be done by just altering the `Makefile` would be good. But we start by trying two branches: master branch have MPACK and branch `only_LAPACK` removes all MPACK stuff. 
