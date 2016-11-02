@@ -38,8 +38,11 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 
 ### Future improvements
 - The parameters below are on the 2-do list to implement, but not of great importance.
+
 0          # Impose spectral symmetry. 0: no, 1: even, 2: odd
+
 .false.    # Shift real part on Matsubara axis before continuation starts to remove Re[f(z_inf)]
+
 .false.    # Which inversion routines to use: .false.: lapack, .true.: mpack c++.
 
 - Parallelize with MPI. Maybe not needed, fast enough...
