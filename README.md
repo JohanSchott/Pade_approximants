@@ -1,49 +1,52 @@
 # Pade_approximants
 
 ## Aim
-The purpose is to perform analytical continuations of Green's functions.  
+The purpose is to perform an analytical continuation of a (Green's) function in the complex plane.  
 
 ## What is contained?
 - Both a Python and a Fortran program.
+- Parameter file `pade.par` (with standard settings) for the Fortran program, in the `tests` folder.
 - Test models:
     - `betheU0`
     - `betheU4`
-    - `Haverkort_wc1_dw0.5`
+    - `two-poles_wc1_dw0.5`
     - `Sm7`
 
 ## Python script
-- The Python script is short and easy to use but only support double precision calculations. 
-
-### How to use 
-- First an input file has to be read, Green's function data somewhere in the complex plane (e.g. at Matsubara frequency points). 
-- Output in the Green's function somewhere in the complex plane.
-- The code is short and written so that a user easily can modify it for her/his purpose. 
-
+- The Python notebook script is short and easy to use.
+- The analytical continuation can be done by either Beach's matrix formulation, Thiele's recursive algorithm or a nonlinear Least Square minimization.
+- The matrix formulation by Beach is here calculated using double precision, which usually is too little.
+- (Green's) function data somewhere in the complex plane (e.g. at Matsubara frequency points) is used as input. 
+- (Green's) function data somewhere else in the complex plane is the output.
 
 ## Fortran program
-- The Fortran program uses LAPACK routines which are modified to quadruple precision or if you want, MPACK's arbitrary precision routines.
-- The Fortran code has more features and does slightly different things than the Python script.
+- The Fortran program using modified LAPACK routines to work with quadruple numerical precision.
+- The Fortran prints more information during execution than the Python script. 
+  It offers a more low level control of the inversion routines in the Beach algorithm.
 
 ### How to use 
-- A input file `pade.inp` has to exist in the current/simulation directory.
+- A parameter input file `pade.par` has to exist in the current/simulation directory.
+- A input file `pade.in`has to exist in the current/simulation directory.
 - Execute the binary `Pade_approximants` 
 
 ### Compile
-Compile by moving to the `fortran` folder. Copy the example Makefile: `Makefile_example` to `Makefile` and adjust it to fit to the current machine. 
-Then run: `make` and the binary `Pade_approximants` should be created.
-The program requires the machine has LAPACK installed somewhere. 
-The Git master branch also requires MPACK to be installed somewhere.
-However the Git branch `only_LAPACK` only requires LAPACK (not MPACK) which makes it easier to compile on a new machine.
-The drawback is of course that MPACK, with its arbitrary precision, can not be used.
+- Move to the `fortran` folder.
+- Copy the example Makefile: `Makefile_example` to `Makefile` and adjust it to fit to the current machine. 
+- Then run: `make` and the binary `Pade_approximants` should be created.
+- Access to modified LAPACK libraries using quadruple precision is required. It is stored in the `quad` folder.
+- The program requires the machine has LAPACK installed somewhere. 
 
 ### Future improvements
-- Implement ZGELSD in quad precision! For complex quad precision the inaccurate (but fast) ZGELS is used. 
-ZGELS assumes full rank but usually we work will rank deficient cases, where we want to also minimize the norm of the solution vector.Also do some test to check so it really improves the spectrum.
-- Merge the two branches `only_LAPACK` and `master` (only has modified LAPACK and the other also has MPACK). 
-The MPACK version could be for high-accuracy calculations and the modified LAPACK version for speed and easy compilation. 
-Want the branch merge so that the in the `Makefile`, tell if want MPACK or not. Perhaps have some compilation flags in the source code.
-- Make the compilation with MPACK easier.
-- Consider off-diagonal Green's functions and self-energies. Especially for negative Matsubara points.
-- Clean up the `Makefile` 
-- Parallelize with MPI ?
-- Clean up the fortran code, remove unneccecary printouts and out-commented code sections
+- The parameters below are on the 2-do list to implement, but not of great importance.
+0          # Impose spectral symmetry. 0: no, 1: even, 2: odd
+.false.    # Shift real part on Matsubara axis before continuation starts to remove Re[f(z_inf)]
+.false.    # Which inversion routines to use: .false.: lapack, .true.: mpack c++.
+
+- Parallelize with MPI. Maybe not needed, fast enough...
+
+### Notes
+- Comparing ZGELSD with ZGELS (using double precision), the spectra shows more features using ZGELS. 
+  ZGELSD gives too smooth spectra, with many features washed out or absent.
+  ZGELS assumes full rank but usually we work will rank deficient cases, where it's common to also minimize the norm of the solution vector. 
+  ZGELSD uses SVD and estimates the rank which can become very low, hence the smooth behavior. 
+- Support for `MPACK`'s arbitrary precsion is removed to simplify compilation. For high precision routines, instead use e.g. the Mathematica software.

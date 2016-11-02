@@ -16,7 +16,7 @@
 # -------------------------------------------------------------------------------------------------------------------
 
 # Object files
-OBJS = matlab.o savem.o openm.o leastsquare.o tikhonovm.o padem.o config.o input.o lapack_wrapper.o poles.o padesetup.o average.o gitversion.o rw.o meshes.o asym.o main.o
+OBJS = gitversion.o loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
 
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -28,16 +28,16 @@ PROG =  Pade_approximants
 # Libraries
 
 # On local machine:
-LIBS = -L"${LAPACKPATH}" -llapack -lrefblas -ltmglib  -L"${ZGELSQUAD}" -lzgelsquad -L"${DGELSDQUAD}" -ldgelsdquad 
+LIBS = -L"${LAPACKPATH}" -llapack -lrefblas -ltmglib  -L"quad/zgels/zgels_quad" -lzgelsquad
 
 # On India:
-#LIBS = -L${LIBRARY_PATH}  -llapack -lf77blas -lcblas -latlas -L${ZGELSQUAD} -lzgelsquad -L${DGELSDQUAD} -ldgelsdquad  -L/usr/local/lib -lgmp -lmblas_gmp -lmlapack_gmp
+#LIBS = -L${LIBRARY_PATH}  -llapack -lf77blas -lcblas -latlas -L"quad/zgels/zgels_quad" -lzgelsquad
 
 # On Matter:
-#LIBS = -L$(ZGELSQUAD)  -lzgelsquad  -Nmkl -mkl=sequential
+#LIBS =  -Nmkl -mkl=sequential -L"quad/zgels/zgels_quad" -lzgelsquad
 
 # On Milou:
-#LIBS = -L${LIBRARY_PATH}  -L${ZGELSQUAD} -lzgelsquad -L${DGELSDQUAD} -ldgelsdquad # -L/usr/local/lib -lgmp -lmblas_gmp -lmlapack_gmp
+#LIBS = -L${LIBRARY_PATH} -L"quad/zgels/zgels_quad" -lzgelsquad
 
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ F90 = gfortran
 F90FLAGS =  -O2 # -fopenmp -g -Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
 
 # On India:
-#INCLUDE = -I/usr/local/include -I/usr/local/include/mpack
+#INCLUDE = -I/usr/local/include
 #CC = c++ -O2 # -g -fopenmp -fbounds-check  #  -Wall  # -Waddress   
 #F90 = gfortran -fopenmp  
 #F90FLAGS =  -O2 # -g #-Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
