@@ -7,6 +7,6 @@
 .false.    # To use the only diagonal configurations where M == N.
 0          # Parameter determining how to evaluate the Pade approximant at the output points.
 .false.    # Calculate poles and residues for all the Pade approximants.
-128        # Numerical precision use in the calculation of the Pade approximants. 64 for double, 128 for quadruple.
+64        # Numerical precision use in the calculation of the Pade approximants. 64 for double, 128 for quadruple.
 0          # If (0) 1, (no) multiplication with transpose matrix. 2 means explicit SVD.
 0.99 0.51  # Criteria values for the averaging. 

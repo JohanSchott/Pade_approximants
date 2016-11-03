@@ -49,7 +49,9 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 
 ### Notes
 - Comparing ZGELSD with ZGELS (using double precision), the spectra shows more features using ZGELS. 
-  ZGELSD gives too smooth spectra, with many features washed out or absent.
-  ZGELS assumes full rank but usually we work will rank deficient cases, where it's common to also minimize the norm of the solution vector. 
-  ZGELSD uses SVD and estimates the rank which can become very low, hence the smooth behavior. 
+  ZGELSD sometimes gives too smooth spectra, with many features washed out or absent.
+  ZGELS assumes full rank and gives more spectral features. Usually Beach's matrix is rank deficient. For rank deficient matrices it's common to also minimize the norm of the solution vector. 
+  ZGELSD uses SVD. Using rcond=-1 and rcond=10^(-40) gave similarly smooth spectra for the Sm7 test model, but the estimated effective rank became very different. Hence, the different output spectra seems originate from the different algorithms in ZGELS and ZGELSD.
+  In the folder `tests/Sm7/solving_Beach_system` spectra for varous setups are shown to illustrate the differences.
+- Speed: For Sm7 test model a simululation taking 44 seconds with quadruple precision takes 15 with double precision. The same setup with the python script takes 1.5 seconds. Note, the simulation time using double precision in fortran was independent of if used ZGELS or ZGELSD. Why python is faster is unknown to me at the moment. 
 - Support for `MPACK`'s arbitrary precsion is removed to simplify compilation. For high precision routines, instead use e.g. the Mathematica software.

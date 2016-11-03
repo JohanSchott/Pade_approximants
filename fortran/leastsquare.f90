@@ -29,9 +29,9 @@ subroutine zls(Ao,bo,mtr,pr,x)
     A=Ao !copy
 
     if(mtr==0) then ! Let Lapack solve equation: A*x=b in LS sense
-       !call zgelswrapper(A,b,pr)  !solves A*x=b using QR or LQ factorization. Full rank is assumed.
+       call zgelswrapper(A,b,pr)  !solves A*x=b using QR or LQ factorization. Full rank is assumed.
        !call zgelsswrapper(A,b)   !solves A*x=b using Singular Value Decomposition SVD (double precision only).  
-       call zgelsdwrapper(A,b)   !solves A*x=b using Singular Value Decomposition SVD with Divide and Conquer (double precision only) 
+       !call zgelsdwrapper(A,b)   !solves A*x=b using Singular Value Decomposition SVD with Divide and Conquer (double precision only) 
     elseif(mtr==1) then ! Let Lapack exactly solve normal equation: A^dagger*A*x=A^dagger*b
        allocate(k(M,M),g(M))
        k=matmul(conjg(transpose(A)),A)
@@ -268,7 +268,7 @@ subroutine zgelsdwrapper(A,b)
     allocate(work(2*(2*N+M))) !twice times minimum, unnecessary big ??
     allocate(rwork(lrwork)) 
     allocate(iwork(liwork))
-    rcond=-1d0  !parameter to determine effective rank of A
+    rcond=-1  !parameter to determine effective rank of A
     call ZGELSD(N,M,1,Ad,N,bd,N,s,rcond,rank,work,lwork,rwork,iwork,info)
     if(info .ne. 0) stop "least square routine do not work properly"
     lwork=ceiling(real(work(1))) !get optimal lwork
