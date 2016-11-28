@@ -20,9 +20,9 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 - (Green's) function data somewhere else in the complex plane is the output.
 
 ## Fortran program
-- The Fortran program using modified LAPACK routines to work with quadruple numerical precision.
-- The Fortran prints more information during execution than the Python script. 
-  It offers a more low level control of the inversion routines in the Beach algorithm.
+- The Fortran program uses modified LAPACK routines to work with quadruple numerical precision.
+- The Fortran program prints more information during execution than the Python script. 
+- The Fortran program offers a more low level control of the inversion routines in the Beach algorithm.
 
 ### How to use 
 - A parameter input file `pade.par` has to exist in the current/simulation directory.
@@ -42,10 +42,6 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 0          # Impose spectral symmetry. 0: no, 1: even, 2: odd
 
 .false.    # Shift real part on Matsubara axis before continuation starts to remove Re[f(z_inf)]
-
-.false.    # Which inversion routines to use: .false.: lapack, .true.: mpack c++.
-
-- Parallelize with MPI. Maybe not needed, fast enough...
 
 ### Notes
 - Comparing ZGELSD with ZGELS (using double precision), the spectra shows more features using ZGELS. 
