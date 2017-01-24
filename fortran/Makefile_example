@@ -15,54 +15,63 @@
 
 # -------------------------------------------------------------------------------------------------------------------
 
-# Object files
-OBJS = gitversion.o loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
-
-# -------------------------------------------------------------------------------------------------------------------
-
-# Binary
-PROG =  Pade_approximants
-
-# -------------------------------------------------------------------------------------------------------------------
-
 # Libraries
 
 # On local machine:
-LIBS = -L"${LAPACKPATH}" -llapack -lrefblas -ltmglib  -L"quad/zgels/zgels_quad" -lzgelsquad
+LIBDIR = -L"${LAPACKPATH}"  -L"quad/zgels/zgels_quad"
+LDLIBS =  -llapack -lrefblas -ltmglib  -lzgelsquad
 
 # On India:
-#LIBS = -L${LIBRARY_PATH}  -llapack -lf77blas -lcblas -latlas -L"quad/zgels/zgels_quad" -lzgelsquad
+#LIBDIR = -L${LIBRARY_PATH}  -L"quad/zgels/zgels_quad"
+#LDLIBS = -llapack -lf77blas -lcblas -latlas   -lzgelsquad
 
 # On Matter:
-#LIBS =  -Nmkl -mkl=sequential -L"quad/zgels/zgels_quad" -lzgelsquad
+#LIBDIR =  -L"quad/zgels/zgels_quad"
+#LDLIBS =  -Nmkl -mkl=sequential  -lzgelsquad
 
 # On Milou:
-#LIBS = -L${LIBRARY_PATH} -L"quad/zgels/zgels_quad" -lzgelsquad
+#LIBDIR = -L${LIBRARY_PATH} -L"quad/zgels/zgels_quad"
+#LDLIBS = -lzgelsquad
 
 # -------------------------------------------------------------------------------------------------------------------
 
 # Compilers
 
 # On local machine:
-F90 = gfortran 
+FCOMPILER = gfortran
 F90FLAGS =  -O2 # -fopenmp -g -Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
 
 # On India:
 #INCLUDE = -I/usr/local/include
 #CC = c++ -O2 # -g -fopenmp -fbounds-check  #  -Wall  # -Waddress   
-#F90 = gfortran -fopenmp  
-#F90FLAGS =  -O2 # -g #-Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
+#FCOMPILER = gfortran  
+#F90FLAGS =  -O2 # -fopenmp -g #-Wall -fbounds-check -Waliasing -fdump-core  -Wreturn-type 
 
 # On matter:
-#F90 = ifort 
+#FCOMPILER = ifort 
 #F90FLAGS =  -O2
 
 # On Milou:
-#F90= mpiifort -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+#FCOMPILER = mpiifort 
+#F90FLAGS = -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
 
-LDFLAGS = $(LIBS)
 
 # -------------------------------------------------------------------------------------------------------------------
+
+%.o: %.F90       # if any file with .o looking at, also consider .F90 files with the same name
+	$(FCOMPILER) $(F90FLAGS) -c $<
+
+%.o: %.f90
+	$(FCOMPILER) $(F90FLAGS) -c $<
+
+%.o: %.cpp
+	$(CC) $(INCLUDE) $(LIBS) -c $<
+
+# Binary
+PROG =  Pade_approximants
+
+# Object files
+OBJS = gitversion.o loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
 
 all: gitR $(PROG)
 
@@ -70,30 +79,17 @@ gitR: gitversion_template.f90
 	./setgitversion.sh 
 
 $(PROG): $(OBJS)
-	$(F90) $(LIBS) -o $@ $(OBJS)
+	$(FCOMPILER) $^ $(LIBDIR) $(LDLIBS) -o $(@)
 
-#$(F90) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+# dependence of each routine to other routines
+main.o: loadsavetxt.o padem.o 
+padem.o: gitversion.o pickpoints.o leastsquare.o poles.o
+poles.o:
+leastsquare.o:
+pickpoints.o:
+loadsavetxt.o: 
+gitversion.o: 
 
-clean:
-	rm -f $(PROG) $(OBJS) *.mod
-
-
-.SUFFIXES: $(SUFFIXES) .f90 .F90 .f .cpp
-
-.f.o:
-	$(F77) $(F77FLAGS) -c $<
-.f90.o:
-	$(F90) $(F90FLAGS) -c $<
-.F90.o:
-	$(F90) $(F90FLAGS) -c $<
-.f90.mod:
-	$(F90) $(F90FLAGS) -c $<
-.F90.mod:
-	$(F90) $(F90FLAGS) -c $<
-
-.mod.o:
-	$(F90) $(F90FLAGS) -c $<
-
-.cpp.o:
-	$(CC) $(INCLUDE) $(LIBS) -c $<
-
+pristine:
+	rm -f *.o
+	rm -f $(PROG)
