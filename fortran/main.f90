@@ -2,8 +2,8 @@
 ! Written by Johan Schott and Elin Lundin.
 ! Given input data zin, f(zin) and complex points zout, the main output is f(zout).
 
-! The file pade.in has three columns: Im[zin], Re[f(zin)] and Im[f(zin)]
-! The file pade.par has the input parameters.
+! The file pade.in has four columns: Re[zin], Im[zin], Re[f(zin)] and Im[f(zin)]
+! The file pade.par contains the input parameters.
 
 ! Computational time considerations:
 ! The number of independent continuations is denoted by the variable ns.
@@ -39,6 +39,6 @@ if(allocated(fin))  deallocate(fin)
 if(allocated(zout)) deallocate(zout)
 if(allocated(fout)) deallocate(fout)
 
-write(*,'(a)') "Averaging Pade approximant program finished."
+write(*,'(a)') "Averaging Pade approximant program successfully finished."
 
 end program 

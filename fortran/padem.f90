@@ -174,13 +174,16 @@ subroutine acPade(z,f,N,zout,solver,nprecision,mtr,x,fout)
     if ( .not. (mod(N,2) == 0 )) then
         stop "The number of Pade coefficients in the acPade routine should be even." 
     endif    
-
-    if (solver == 0) then ! Beach's matrix formulation
-        call padeMatrix(z,f,N,nprecision,mtr,x) ! Construct matrix and rhs in linear system of equations and seek a LS solution. 
+    ! Beach's matrix formulation
+    if (solver == 0) then
+        ! construct matrix and rhs in linear system of equations and seek a LS solution. 
+        call padeMatrix(z,f,N,nprecision,mtr,x)
         allocate(fq(size(zout)))
         call epade(zout,x,fq)
-        fout = fq ! convert from quadruple to double precision
+        ! convert from quadruple to double precision
+        fout = fq
         deallocate(fq)
+    ! Thiele's algorithm 
     elseif ( solver == 1) then
         stop "Thiele's algorithm is not implemented yet."
     else

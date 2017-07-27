@@ -1,5 +1,5 @@
 # Parameter file for program: pade_approximants
--1 1 500   # Real energy mesh: wmin, wmax, Nw.
+-2 4 500   # Real energy mesh: wmin, wmax, Nw.
 0.01       # Distance above the real axis.
 -3 -1 1    # Lowest index in the input file to use: nminstart, nminfinish, nminstep. Mirror values are added by nmin < 0 
 50 100 4   # Number of input points to use: Mmin, Mmax, Mstep.
@@ -7,6 +7,6 @@
 .false.    # To use the only diagonal configurations where M == N.
 0          # Parameter determining how to evaluate the Pade approximant at the output points.
 .false.    # Calculate poles and residues for all the Pade approximants.
-128        # Numerical inversion precision for calculating the Pade approximant coefficients. 64 for double, 128 for quadruple.
+64         # Numerical inversion precision for calculating the Pade approximant coefficients. 64 for double, 128 for quadruple.
 0          # (0) 1 means (no) multiplication with transpose matrix. 2 means explicit SVD.
 0.99 0.51  # Selection criteria parameters for the averaging. 

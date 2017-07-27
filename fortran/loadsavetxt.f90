@@ -45,10 +45,11 @@ end subroutine
 subroutine readinputdata(zin,fin)
     implicit none
     complex(kind=16),allocatable,intent(out) :: zin(:),fin(:)
-    real(kind=16),allocatable :: wn(:),re(:),im(:)
-    call openf('pade.in',wn,re,im)
-    allocate(zin(size(wn)),fin(size(wn)))
-    zin = cmplx(0q0,wn,kind=16)
+    real(kind=16),allocatable :: z_re(:),z_im(:)
+    real(kind=16),allocatable :: re(:),im(:)
+    call openf('pade.in',z_re,z_im,re,im)
+    allocate(zin(size(z_re)),fin(size(z_re)))
+    zin = cmplx(z_re,z_im,kind=16)
     fin = cmplx(re,im,kind=16)
 end subroutine
 
@@ -146,24 +147,25 @@ subroutine open3(filen,x,y,z)
     close(70)
 end subroutine
 
-subroutine open4(filen,x,y,z,a)
+subroutine open4(filen,a,b,c,d)
     implicit none
     character(len=*),intent(in) :: filen
-    real(kind=16),allocatable,intent(out) :: x(:),y(:),z(:),a(:)
-    integer :: k,i,j,ok
+    real(kind=16),allocatable,intent(out) :: a(:),b(:),c(:),d(:)
+    integer :: k,i,j,n,ok
     k=readstart(filen)
     i=filelen(filen)
-    if(allocated(x)) deallocate(x)
-    if(allocated(y)) deallocate(y)
-    if(allocated(z)) deallocate(z)
     if(allocated(a)) deallocate(a)
-    allocate(x(i-k+1),y(i-k+1),z(i-k+1),a(i-k+1))
+    if(allocated(b)) deallocate(b)
+    if(allocated(c)) deallocate(c)
+    if(allocated(d)) deallocate(d)
+    n = i-k+1
+    allocate(a(n),b(n),c(n),d(n))
     open(70,file=trim(filen),iostat=ok)
     do j=1,k-1
         read(70,*)
     enddo
-    do j=1,i-k+1
-        read(70,*) x(j),y(j),z(j),a(j)
+    do j=1,n
+        read(70,*) a(j),b(j),c(j),d(j)
     enddo
     close(70)
 end subroutine

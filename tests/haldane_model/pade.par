@@ -1,6 +1,6 @@
 # Parameter file for program: pade_approximants
--1 1 500   # Real energy mesh: wmin, wmax, Nw.
-0.01       # Distance above the real axis.
+-3 3 500   # Real energy mesh: wmin, wmax, Nw.
+0.001      # Distance above the real axis.
 -3 -1 1    # Lowest index in the input file to use: nminstart, nminfinish, nminstep. Mirror values are added by nmin < 0 
 50 100 4   # Number of input points to use: Mmin, Mmax, Mstep.
 40 80 4    # Number of Pade approximant coefficients to use: Nmin, Nmax, Nstep.

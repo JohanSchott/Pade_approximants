@@ -1,5 +1,5 @@
 #
-# Makefile for Fortran Pade_approximants program. 
+# Makefile for Fortran program: pade_approximants
 #
 # -------------------------------------------------------------------------------------------------------------------
 # Modules
@@ -14,7 +14,6 @@
 # module load intel/13.1  intelmpi/4.1
 
 # -------------------------------------------------------------------------------------------------------------------
-
 # Libraries
 
 # On local machine:
@@ -34,7 +33,6 @@ LDLIBS =  -llapack -lrefblas -ltmglib  -lzgelsquad
 #LDLIBS = -lzgelsquad
 
 # -------------------------------------------------------------------------------------------------------------------
-
 # Compilers
 
 # On local machine:
@@ -68,7 +66,7 @@ F90FLAGS =  -O2 # -fopenmp -g -Wall -fbounds-check -Waliasing -fdump-core  -Wret
 	$(CC) $(INCLUDE) $(LIBS) -c $<
 
 # Binary
-PROG =  Pade_approximants
+PROG =  pade_approximants
 
 # Object files
 OBJS = gitversion.o loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
@@ -90,6 +88,6 @@ pickpoints.o:
 loadsavetxt.o: 
 gitversion.o: 
 
-pristine:
-	rm -f *.o
+clean:
+	rm -f *.o *.mod
 	rm -f $(PROG)

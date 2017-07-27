@@ -27,23 +27,32 @@ subroutine zls(Ao,bo,mtr,pr,x)
     allocate(A(N,M),b(N))
     b=bo !copy
     A=Ao !copy
-
-    if(mtr==0) then ! Let Lapack solve equation: A*x=b in LS sense
-       call zgelswrapper(A,b,pr)  !solves A*x=b using QR or LQ factorization. Full rank is assumed.
-       !call zgelsswrapper(A,b)   !solves A*x=b using Singular Value Decomposition SVD (double precision only).  
-       !call zgelsdwrapper(A,b)   !solves A*x=b using Singular Value Decomposition SVD with Divide and Conquer (double precision only) 
-    elseif(mtr==1) then ! Let Lapack exactly solve normal equation: A^dagger*A*x=A^dagger*b
+    ! Let Lapack solve equation: A*x=b in LS sense
+    if(mtr==0) then
+       ! solves A*x=b using QR or LQ factorization. Full rank is assumed.
+       call zgelswrapper(A,b,pr)
+       ! solves A*x=b using Singular Value Decomposition SVD (only double precision implemented).  
+       !call zgelsswrapper(A,b)  
+       ! solves A*x=b using Singular Value Decomposition SVD with Divide and Conquer (only double precision implemented) 
+       !call zgelsdwrapper(A,b)
+    ! Let Lapack exactly solve normal equation: A^dagger*A*x=A^dagger*b
+    elseif(mtr==1) then
        allocate(k(M,M),g(M))
        k=matmul(conjg(transpose(A)),A)
        g=matmul(conjg(transpose(A)),b)
-       call zgelswrapper(k,g,pr) !solves k*x=g using QR or LQ factorization
-       !call zgelsswrapper(k,g)  !solves k*x=g using Singular Value Decomposition SVD (double precision only)
-       !call zgelsdwrapper(k,g)  !solves k*x=g using Singular Value Decomposition SVD with Divide and Conquer (double precision only)
+       ! solves k*x=g using QR or LQ factorization. Full rank is assumed.
+       call zgelswrapper(k,g,pr)
+       ! solves A*x=b using Singular Value Decomposition SVD (only double precision implemented).  
+       !call zgelsswrapper(k,g) 
+       ! solves A*x=b using Singular Value Decomposition SVD with Divide and Conquer (only double precision implemented) 
+       !call zgelsdwrapper(k,g) 
        b(1:M)=g
        deallocate(k,g)
-    elseif(mtr==2 .or. mtr==3) then !Explicitly do SVD and use singular values bigger than machine precision
+    ! Explicit SVD
+    elseif(mtr==2 .or. mtr==3) then
        allocate(u(N,N),s(p),v(M,M))
-       call zgesddwrapper(A,u,s,v,pr) ! computes the singular value decomposition of a complex matrix using Divide and Conquer. (double precision only)
+       ! computes the singular value decomposition of a complex matrix using Divide and Conquer. (only double precision implemented)
+       call zgesddwrapper(A,u,s,v,pr)
        write(90,'(a)') "SVD's singular values: s_i and s_i/s_1"
        do i=1,p
           write(90,'(2E13.5)') s(i),s(i)/s(1)
@@ -60,12 +69,14 @@ subroutine zls(Ao,bo,mtr,pr,x)
        write(90,'(E15.5,a)') s(1)/s(r)," is estimated condition number"
        if(mtr==2) then
           mo=r
-       elseif(mtr==3) then !Explicitly do SVD and use singular values s(i)/s(1)>alpha
-          alpha=10**(-4q0) !This is just an example value.
+       ! Explicit SVD and use singular values s(i)/s(1)>alpha
+       elseif(mtr==3) then
+          !This is just an example value.
+          alpha=10**(-4q0)
           mo=minloc(abs(s-s(1)*alpha),1) 
        endif
        write(90,'(I4,a,I4)') mo," SVD modes used for solution, out of",min(M,N)
-       !construct solution here
+       ! construct solution here
        allocate(g(M))
        g=cmplx(0q0,0q0,kind=16)
        do i=1,mo

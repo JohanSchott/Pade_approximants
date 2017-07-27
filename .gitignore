@@ -1,13 +1,17 @@
 
 # object and module files
-fortran/*.o
-fortran/*.mod
+*.o
+*.mod
+
+# libraries
+*.a
 
 # executable
-fortran/Pade_approximants
+fortran/pade_approximants
 
 # Local setting files
 fortran/Makefile
+fortran/quad/zgels/zgels_quad/Makefile
 
 # storing current Git version. Updated every time recompile 
 fortran/gitversion.f90

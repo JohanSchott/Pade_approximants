@@ -5,10 +5,10 @@ module pickpoints
 
     subroutine pick_points(z,f,nmin,M,zp,fp)
         implicit none
-        complex(kind=16),intent(in) :: z(:),f(:)            ! Input points and values 
-        integer,intent(in) :: nmin                                     ! lowest index to use from the input points. nmin < 0, mirror values are added.
-        integer,intent(in) :: M                                        ! number of points to pick.
-        complex(kind=16),allocatable :: zp(:),fp(:)         ! Picked points and values to use in the analytical continuation
+        complex(kind=16),intent(in) :: z(:),f(:)     ! Input points and values 
+        integer,intent(in) :: nmin                   ! lowest index to use from the input points. nmin < 0, mirror values are added.
+        integer,intent(in) :: M                      ! number of points to pick.
+        complex(kind=16),allocatable :: zp(:),fp(:)  ! Picked points and values to use in the analytical continuation
         integer :: nadd
        
         ! deallocate zp and fp if they are already allocated
