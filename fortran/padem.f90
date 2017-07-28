@@ -1,10 +1,10 @@
 module padem
-use gitversion
+
 use pickpoints
 use leastsquare
 use poles
-
 implicit none
+include 'gitversion'
 
 contains
 
@@ -59,7 +59,7 @@ subroutine pade(zin,fin,zout,fout)
     
     ! write git version number to the information file 
     open(90,file='pade_info')
-    write(90,'(a,a)') " git hash number: ", git_revision
+    write(90,'(a,a)') " git hash number: ", trim(git_version)
 
     ! construct nmins, Ms, Ns
     i = floor((nminfinish-nminstart)/(1d0*nminstep))

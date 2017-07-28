@@ -14,5 +14,5 @@ fortran/Makefile
 fortran/quad/zgels/zgels_quad/Makefile
 
 # storing current Git version. Updated every time recompile 
-fortran/gitversion.f90
+fortran/gitversion
 

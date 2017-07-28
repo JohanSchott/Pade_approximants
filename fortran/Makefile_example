@@ -69,19 +69,19 @@ F90FLAGS =  -O2 # -fopenmp -g -Wall -fbounds-check -Waliasing -fdump-core  -Wret
 PROG =  pade_approximants
 
 # Object files
-OBJS = gitversion.o loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
+OBJS = loadsavetxt.o pickpoints.o leastsquare.o poles.o padem.o main.o
 
 all: gitR $(PROG)
 
-gitR: gitversion_template.f90
-	./setgitversion.sh 
+gitR:
+	./gitversion_update.sh 
 
 $(PROG): $(OBJS)
 	$(FCOMPILER) $^ $(LIBDIR) $(LDLIBS) -o $(@)
 
 # dependence of each routine to other routines
 main.o: loadsavetxt.o padem.o 
-padem.o: gitversion.o pickpoints.o leastsquare.o poles.o
+padem.o: pickpoints.o leastsquare.o poles.o
 poles.o:
 leastsquare.o:
 pickpoints.o:
@@ -90,4 +90,5 @@ gitversion.o:
 
 clean:
 	rm -f *.o *.mod
+	rm -f gitversion
 	rm -f $(PROG)

@@ -1,0 +1,1 @@
+    character(len=50) :: git_version = 'tmp'
