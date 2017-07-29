@@ -333,7 +333,7 @@ subroutine getAveragePade(P,c1v,c2v,w,fout)
         c1 = ( d <= c1v*sum(d)/k ) 
         ind = sortp(d)
         c2 = .false.
-        c2(ind(1:int(c2v*k))) = .true. ! the c2v % lowest continuations fulfill criterion 2.
+        c2(ind(1:int(c2v*k))) = .true. ! the 100*c2v % lowest continuations fulfill criterion 2.
         mask = c1 .and. c2
         j = 0
         do i=1,k

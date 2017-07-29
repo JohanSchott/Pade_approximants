@@ -6,11 +6,21 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 ## What is contained?
 - Both a Python and a Fortran program.
 - Parameter file `pade.par` (with standard settings) for the Fortran program, in the `tests` folder.
-- Test models:
-    - `Sm7`
-    - `betheU0`
-    - `haldane_model`
-    - `two-poles_wc1_dw0.5`
+- Test models, located in the `tests` folder.
+
+
+## Test models
+- `Sm7`
+- `betheU0`
+- `haldane_model`
+- `two-poles_wc1_dw0.5`
+
+Each test model folder contains:
+
+- Very short description of the test model, in file `README.md`.
+- Exact solution on the real axis, in file `exact.dat`.
+- Input data file `pade.in`.
+- Parameter file `pade.par` for the Fortran program.
 
 ## Python notebook
 - The Python notebook is short and easy to use.
@@ -31,7 +41,7 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
   Four columns are expected: `Re[zin], Im[zin], Re[f(zin)] and Im[f(zin)]`
   where `zin` are the input points and `f(zin)` the corresponding function values.
 - Execute the binary `pade_approximants` 
-- The following files will be generated:
+- The following output files will be generated:
     - `pade_info`, gives information about the performed continuations
     - `pade_fout_all`, all the Pade approximants, evaluated on the `zout` points
     - `pade_fout`, the Pade approximant average 
@@ -40,11 +50,12 @@ The purpose is to perform an analytical continuation of a (Green's) function in 
 ### Parameters in `pade.par` 
 Below follows a description about each line in the input parameter file `pade.par`.
 
-1)  Works as a header (or can be left empty).
+1)  Works as a header (this line can be left empty).
 
-2)  Settings for the output real-axis mesh.
+2)  Settings for the output real-axis mesh. 
+    Three parameters: wmin, wmax, Nw
 
-3)  Sets the distance above the real-axis for the output mesh.
+3)  Distance above the real-axis for the output mesh.
 
 4)  Lowest index in the file `pade.in` to use for the continuations. 
     Three parameters: nminstart, nminfinish, nminstep.
@@ -73,7 +84,14 @@ Below follows a description about each line in the input parameter file `pade.pa
     - 2: explicit SVD
 
 12) Averaging criteria parameters for the Pade approximants on the real axis.
-
+    Two parameters: c1v, c2v.
+    A continuation is included in the average if it fulfills two criteria.
+    The two criteria sort out Pade approximant outliers at the real-axis.
+    Each Pade approximant, on the real-axis, is compared with the other Pade approximants.
+    The differences to all the other Pade approximants are summed, giving a distance measure for each continuation.
+    - criterion 1: Continuation has a distance measure smaller than c1v times the average distance measure.
+    - criterion 2: Continuation belongs to the 100 c2v procent lowest continuations (in terms of the distance measure). 
+    
 ### Compile
 - Change directory to the `fortran` folder.
 - Copy the example Makefile: `Makefile_example` to `Makefile` and adjust it to fit to the current machine. 
@@ -89,7 +107,7 @@ Below follows a description about each line in the input parameter file `pade.pa
 - The parameters below are on the 2-do list to implement, but not of great importance.
     - 0          # Impose spectral symmetry. 0: no, 1: even, 2: odd
     - .false.    # Shift real part of input data by `Re[f(z_inf)]` before the analytical continuation.
-- Any suggestions?
+- Suggestions can conveniently be written in the github Issues section.
 
 ### Notes
 - Comparing ZGELSD with ZGELS (using double precision), the spectra shows more features using ZGELS. 
