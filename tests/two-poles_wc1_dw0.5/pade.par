@@ -9,4 +9,5 @@
 .false.    # Calculate poles and residues for all the Pade approximants.
 64         # Numerical inversion precision for calculating the Pade approximant coefficients. 64 for double, 128 for quadruple.
 0          # (0) 1 means (no) multiplication with transpose matrix. 2 means explicit SVD.
+.false.     # Exclude Pade approximants having positive imaginary part on at least one output point.
 0.99 0.51  # Selection criteria parameters for the averaging. 

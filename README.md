@@ -83,7 +83,9 @@ Below follows a description about each line in the input parameter file `pade.pa
     - 1: Let LAPACK solve normal equation: $A^{\dagger} A x = A^{\dagger} b$
     - 2: explicit SVD
 
-12) Averaging criteria parameters for the Pade approximants on the real axis.
+12) Exclude Pade approximants having positive imaginary part on at least one output point.
+
+13) Averaging criteria parameters for the Pade approximants on the real axis.
     Two parameters: c1v, c2v.
     A continuation is included in the average if it fulfills two criteria.
     The two criteria sort out Pade approximant outliers at the real-axis.
@@ -103,11 +105,12 @@ Below follows a description about each line in the input parameter file `pade.pa
 - Go back to the `fortran` folder and run `make`. 
   The binary `pade_approximants` should be created.
 
-### Future possible improvements
+### Possible improvements
 - The parameters below are on the 2-do list to implement, but not of great importance.
     - 0          # Impose spectral symmetry. 0: no, 1: even, 2: odd
     - .false.    # Shift real part of input data by `Re[f(z_inf)]` before the analytical continuation.
-- Suggestions can conveniently be written in the github Issues section.
+    - 128        # Determining the precision of all variables, except those involved in the inversion. This would enable use of only double precision variables, which would give a speed-up (at the prize of some precision). 
+- Any suggestion, idea or problem can conveniently be written in the github Issues section.
 
 ### Notes
 - Comparing ZGELSD with ZGELS (using double precision), the spectra shows more features using ZGELS. 

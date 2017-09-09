@@ -23,6 +23,7 @@ subroutine pade(zin,fin,zout,fout)
     logical :: calcpoles   
     integer :: nprecision
     integer :: mtr
+    logical :: exclude_positive     
     real(kind=8) :: c1v,c2v
     ! help variables
     integer,allocatable :: nmins(:),Ms(:),Ns(:)         ! the arrays to loop over   
@@ -54,6 +55,7 @@ subroutine pade(zin,fin,zout,fout)
     read(80,*) calcpoles
     read(80,*) nprecision
     read(80,*) mtr
+    read(80,*) exclude_positive
     read(80,*) c1v,c2v
     close(80)
     
@@ -132,7 +134,7 @@ subroutine pade(zin,fin,zout,fout)
     do i=1,counter
         P(:,i) = c(i)%P
     enddo
-    call getAveragePade(P,c1v,c2v,c(1:counter)%w,fout)     ! create average 
+    call getAveragePade(P,exclude_positive,c1v,c2v,c(1:counter)%w,fout)     ! create average 
     write(90,'(a,I4)') 'number of continuations with weight:',sum(c(1:counter)%w)
     
     ! write all spectra to file 
@@ -272,12 +274,13 @@ subroutine epade(z,x,f)
     deallocate(num,denum)
 end subroutine
 
-subroutine getAveragePade(P,c1v,c2v,w,fout)
+subroutine getAveragePade(P,exclude_positive,c1v,c2v,w,fout)
     implicit none
-    complex(kind=8),intent(in)                :: P(:,:)  ! Pade approximants evaluated at points zout
-    real(kind=8),intent(in)                   :: c1v,c2v ! average criteria parameters
-    integer,intent(out)                       :: w(:)    ! averaging weights
-    complex(kind=8),allocatable,intent(inout) :: fout(:) ! Average of Pade approximants P weighted with weightt w.
+    complex(kind=8),intent(in)                :: P(:,:)            ! Pade approximants evaluated at points zout
+    logical,intent(in)                        :: exclude_positive  ! If .true., exclude Pade approximants being positive on at least one output point. 
+    real(kind=8),intent(in)                   :: c1v,c2v           ! average criteria parameters
+    integer,intent(out)                       :: w(:)              ! averaging weights
+    complex(kind=8),allocatable,intent(inout) :: fout(:)           ! Average of Pade approximants P weighted with weightt w.
     ! help variables
     integer,allocatable      :: g(:)       ! index list with Pade approximants in P fullfilling Im(P)<=0      
     real(kind=8),allocatable :: A(:,:)     ! Imaginary part of Pade approximants, fullfilling Im(P)<=0 
@@ -291,19 +294,27 @@ subroutine getAveragePade(P,c1v,c2v,w,fout)
     n = size(P,1) ! nbr of points zout
     c = size(P,2) ! nbr of continuations
 
-    ! count the number of "physical" continuations, meaning those who fulfill Im(P) <= 0
-    k=0
-    do i=1,c
-        if (all(aimag(P(:,i))<=0)) then
-            k = k+1    
-        endif
-    enddo 
-    if(k==0) stop "No 'physical' continuations found"
-    write(90,'(a,I4)') 'number of continuations with Im(f(zout))<=0 is:',k  
+    if (exclude_positive) then
+        ! count the number of "physical" Pade approximants, meaning those who fulfilling Im(P) <= 0
+        k=0
+        do i=1,c
+            if (.not. any(0<aimag(P(:,i)))) then
+                k = k+1    
+            endif
+        enddo 
+        if(k==0) stop "No 'physical' continuations found"
+        write(90,'(a,I4)') 'number of continuations with Im(f(zout))<=0 is:',k  
+    else
+        ! use all Pade approximants 
+        write(90,'(a,I4)') 'Use all Pade approximants.'
+        k = c
+    endif
     allocate(g(k),A(size(P,1),k))
     k=0
     do i=1,c
-        if (all(aimag(P(:,i))<=0)) then
+        ! If parameter exclude_positive == .false., exclude no Pade approximant.
+        ! If parameter exclude_positive == .true., exclude Pade approximants fullfilling 0<Im(P).
+        if (.not. (exclude_positive .and. any(0<aimag(P(:,i))))) then
             k = k+1
             g(k) = i
             A(:,k) = aimag(P(:,i))    
@@ -329,7 +340,7 @@ subroutine getAveragePade(P,c1v,c2v,w,fout)
             d(i) = sum(delta(:i-1,i))+sum(delta(i,i+1:)) 
         enddo 
         ! calculate if to include or reject continuations based on two criteria:
-        allocate(c1(k),c2(k),mask(k))
+        allocate(c1(k),c2(k),mask(k),ind(k))
         c1 = ( d <= c1v*sum(d)/k ) 
         ind = sortp(d)
         c2 = .false.
@@ -344,7 +355,7 @@ subroutine getAveragePade(P,c1v,c2v,w,fout)
             endif
         enddo
         fout = fout/j ! divide with the number of continuations contributing in the average
-        deallocate(delta,d,c1,c2,mask)
+        deallocate(delta,d,c1,c2,mask,ind)
     endif
     deallocate(g,A)
 end subroutine

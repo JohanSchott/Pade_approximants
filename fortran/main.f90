@@ -30,7 +30,7 @@ call readzoutdata(zout)
 ! Perform the analytical continuation and return fout. 
 call pade(zin,fin,zout,fout)
 
-! Save the output in file pade_fout and the spectral function 
+! Save the output function in file pade_fout and the spectral function in file pade_A
 call savefout(zout,fout)
 
 ! Deallocate variables
